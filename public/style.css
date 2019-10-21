@@ -1,0 +1,44 @@
+html, body {
+	font: 'Abril Fatface', sans-serif;
+	font-family: 'Times New Roman' !important;
+}
+
+nav {
+	padding: 10px;
+	width: 100%;
+	border-bottom: 1px solid black;
+}
+
+.logo {
+	font-family: 'Times New Roman';
+	text-transform: uppercase;
+	font-size: 25px;
+	margin: 0;
+}
+
+.logo::first-letter {
+	font-size:35px;
+}
+
+.word-box {
+	padding: 10px;
+	border-radius: 10px;
+}
+.word-box .given-word{
+	padding:0;
+	margin:0;
+	font-size: 45px;
+	font-family: 'Times New Roman';
+	font-weight:lighter;
+}
+
+.explain-box {
+	padding: 10px;
+	border-radius: 10px;
+}
+.explain-box .input-text{
+	width:100%;
+	height:80px;
+	resize:none;
+	padding:10px;
+}

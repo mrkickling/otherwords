@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>In other words</title>
+
+	<link href="https://fonts.googleapis.com/css?family=Abril+Fatface&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+
+
+	<main class="container-fluid">
+		<div class="row">
+			<nav class="col text-center">
+				<h2 class="logo">Synonym</h2>
+			</nav>
+		</div>
+		<div class="row">
+			<div class="col text-center">
+				<div class="word-box">
+					Explain the word:
+					<h2 class="given-word">Word</h2>
+					without mentioning it.
+					<br>
+					<br>
+					<button type="button" class="btn btn-sm btn-primary rules-popover" data-placement="top" data-toggle="popover" title="Rules" data-content="Don't include the word in your explanation. Don't use translations. Synonyms are ok. You will receive 1 point if someone guesses the word correctly with your explanation.">Rules</button>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6 offset-md-3 text-center">
+				<div class="explain-box">
+					<div style="float: left;"><span id="count">0</span>/140</div>
+					<textarea class="input-text" maxlength="140" name="text" placeholder="In other words" autofocus></textarea>
+					<button class="form-control btn btn-success">Done</button>
+				</div>
+				<div class="guess-box" style="display:none;">
+						Guess!
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6 offset-md-3 text-center">
+				<div class="points-box">
+						<table class="table">
+							<tr>
+								<td><b>Nickname:</b></td>
+								<td>Jocke</td>
+							</tr>
+							<tr>
+								<td><b>Total points:</b></td>
+								<td>10</td>
+							</tr>
+						</table>
+				</div>
+			</div>
+		</div>
+
+	</main>
+
+
+  <script src = "https://code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	<script src = "main.js" type="text/javascript"></script>
+</body>
+</html>
