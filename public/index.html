@@ -9,35 +9,43 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-
-
+	<div class='alerter'>
+		Congrats!
+	</div>
+ <noscript>THIS WEBSITE REQUIRES JAVASCRIPT TO RUN!</noscript>
 	<main class="container-fluid">
 		<div class="row">
 			<nav class="col text-center">
 				<h2 class="logo">Synonym</h2>
+				<div class="progress-bar"></div>
 			</nav>
 		</div>
 		<div class="row">
 			<div class="col text-center">
-				<div class="word-box">
-					Explain the word:
+				<div class="word-box" style="display:none;">
+					<u>Explain the word:</u>
 					<h2 class="given-word">Word</h2>
 					without mentioning it.
 					<br>
 					<br>
-					<button type="button" class="btn btn-sm btn-primary rules-popover" data-placement="top" data-toggle="popover" title="Rules" data-content="Don't include the word in your explanation. Don't use translations. Synonyms are ok. You will receive 1 point if someone guesses the word correctly with your explanation.">Rules</button>
+					<button type="button" class="btn btn-sm btn-primary rules-popover" data-placement="bottom" data-toggle="popover" title="Rules" data-content="Don't include the word in your explanation. Don't use translations. Synonyms are ok. You will receive 1 point if someone guesses the word correctly with your explanation.">Rules</button>
+				</div>
+				<div class="explanation-box" style="display:none;">
+					<u>Guess the word:</u>
+					<br><span class="explanation-to-guess"></span>
 				</div>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-6 offset-md-3 text-center">
-				<div class="explain-box">
+				<div class="explain-box" style="display:none;">
 					<div style="float: left;"><span id="count">0</span>/140</div>
-					<textarea class="input-text" maxlength="140" name="text" placeholder="In other words" autofocus></textarea>
-					<button class="form-control btn btn-success">Done</button>
+					<textarea class="input-text-explain" maxlength="140" name="text" placeholder="In other words" autofocus></textarea>
+					<button id="send-explain" class="form-control btn btn-success">Done</button>
 				</div>
 				<div class="guess-box" style="display:none;">
-						Guess!
+					<textarea class="input-text-guess" maxlength="140" name="text" placeholder="Guess the word" autofocus></textarea>
+					<button id="send-guess" class="form-control btn btn-success">Guess</button>
 				</div>
 			</div>
 		</div>
@@ -48,11 +56,11 @@
 						<table class="table">
 							<tr>
 								<td><b>Nickname:</b></td>
-								<td>Jocke</td>
+								<td><input type="text" id="username"></td>
 							</tr>
 							<tr>
 								<td><b>Total points:</b></td>
-								<td>10</td>
+								<td id="points">0</td>
 							</tr>
 						</table>
 				</div>
@@ -63,6 +71,7 @@
 
 
   <script src = "https://code.jquery.com/jquery-1.10.2.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>

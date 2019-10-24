@@ -9,6 +9,33 @@ nav {
 	border-bottom: 1px solid black;
 }
 
+.progress-bar {
+	background: lightblue;
+	width:0%;
+	height:10px;
+	clear:both;
+	display:none;
+}
+
+.alerter{
+	text-align: center;
+	position: absolute;
+	width: 100%;
+	height: 60px;
+	padding: 15px;
+	background-color: rgba(255,255,255,1);
+	z-index:10;
+	left:0;
+	font-size: 15px;
+	top: 0;
+	display: none;
+}
+
+#username {
+	border:0;
+	text-align: center;
+}
+
 .logo {
 	font-family: 'Times New Roman';
 	text-transform: uppercase;
@@ -18,6 +45,15 @@ nav {
 
 .logo::first-letter {
 	font-size:35px;
+}
+
+.explanation-box {
+	padding:10px;
+	border-radius:10px;
+}
+.explanation-box .explanation-to-guess {
+	font-size:25px;
+	font-style: italic;
 }
 
 .word-box {
@@ -36,7 +72,8 @@ nav {
 	padding: 10px;
 	border-radius: 10px;
 }
-.explain-box .input-text{
+
+.explain-box .input-text-explain, .input-text-guess{
 	width:100%;
 	height:80px;
 	resize:none;
