@@ -9,7 +9,8 @@ var striptags = require('striptags');
 require('dotenv').config()
 var app = express();
 var server = require('http').Server(app);
-var io = require('socket.io')(server, { origins: '*:*'});
+var io = require('socket.io')(server);
+io.set('origins', '*:*');
 
 var path = require('path');
 var port = process.env.PORT || 80;
