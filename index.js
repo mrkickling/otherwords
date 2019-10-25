@@ -7,9 +7,10 @@ TopList = require('./TopList.js')
 getIndexOfWordInList = require('./wordListFunctions.js')
 var striptags = require('striptags');
 require('dotenv').config()
+
 var app = express();
 var server = require('http').Server(app);
-// var io = require('socket.io')(server);
+var io = require('socket.io')(server);
 const io = require("socket.io")(server, {
     handlePreflightRequest: (req, res) => {
         const headers = {
@@ -27,6 +28,36 @@ var port = process.env.PORT || 80;
 server.listen(port, () => {
   console.log('Server listening at port %d', port);
 });
+
+if(process.env.ENVIRONMENT != "develop"){
+  function requireHTTPS(req, res, next) {
+    // The 'x-forwarded-proto' check is for Heroku
+    if (!req.secure && req.get('x-forwarded-proto') !== 'https' && process.env.NODE_ENV !== "development") {
+      return res.redirect(process.env.HOST + req.url);
+    }
+    next();
+  }
+  app.use(requireHTTPS);
+
+  // Certificate
+  const privateKey = fs.readFileSync('/etc/letsencrypt/live/synonym.westeurope.cloudapp.azure.com/privkey.pem', 'utf8');
+  const certificate = fs.readFileSync('/etc/letsencrypt/live/synonym.westeurope.cloudapp.azure.com/cert.pem', 'utf8');
+  const ca = fs.readFileSync('/etc/letsencrypt/live/synonym.westeurope.cloudapp.azure.com/chain.pem', 'utf8');
+
+  const credentials = {
+  	key: privateKey,
+  	cert: certificate,
+  	ca: ca
+  };
+
+  var https = require('https').Server(credentials, app);
+  io = require('socket.io')(https);
+
+  https.listen(443, () => {
+  	console.log('HTTPS Server running on port 443');
+  });
+}
+
 
 /* Start connection to mysql database */
 var con = mysql.createConnection({
