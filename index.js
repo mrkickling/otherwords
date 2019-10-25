@@ -1,4 +1,5 @@
 var TIMER_TIME = 30;
+var fs = require('fs')
 var express = require('express')
 var mysql = require('mysql')
 SqlManager = require('./SqlManager.js')
