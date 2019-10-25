@@ -1,5 +1,6 @@
-levensteinDistance = require('./levensteinDistance.js')
-getIndexOfWordInList = require('./wordListFunctions.js')
+levensteinDistance = require('./levensteinDistance.js');
+getIndexOfWordInList = require('./wordListFunctions.js');
+
 TIMER_TIME = 30;
 
 class User {
@@ -39,7 +40,6 @@ class User {
    timerCounter() {
      var socket = this.io.sockets.connected[this.socket_id];
      if (this.mode == "guess") {
-       console.log(this.timer);
        this.timer--;
        if (socket) {
          socket.emit('timer', this.timer);
@@ -47,7 +47,7 @@ class User {
      }
      if (this.timer < 0) {
        this.timeOut(this.words);
-       console.log("Lost time");
+       console.log("Time out for user " + this.name);
      }
    }
 
@@ -129,7 +129,6 @@ class User {
    }
 
    guessCorrect(word) {
-     console.log(this.word_to_guess)
      if (levensteinDistance(word.toLowerCase(), this.word_to_guess.word) <= 1) {
        console.log("Guess was correct!!!");
        return true;
@@ -144,9 +143,16 @@ class User {
 
    makeExplanation(explanation) {
      if (explanation.length < 1) { return false; }
+     var all_words = explanation.toLowerCase().split("  ");
      var reversed = explanation.split("").reverse().join("");
+
+     for (var i = 0; i < all_words.length; i++) {
+       if (levensteinDistance(this.word_to_explain, all_words[i]) < 2) {
+         return false;
+       }
+     }
      if (explanation.includes(this.word_to_explain) ||
-        levensteinDistance(this.word_to_explain, explanation) <= 1 ||
+        levensteinDistance(this.word_to_explain, explanation) <= 2 ||
         reversed.includes(this.word_to_explain)) {
        return false;
      } else {
@@ -160,6 +166,9 @@ class User {
      if (socket) {
        var wordIndex = getIndexOfWordInList(socket.user.word_to_guess.word, words);
        var explanations = words[wordIndex].explanations;
+       if (!explanations) {
+         console.log(words[wordIndex]);
+       }
        var randomExplanation = explanations[ Math.floor(explanations.length * Math.random()) ]
        console.log(randomExplanation);
        if(!randomExplanation) {

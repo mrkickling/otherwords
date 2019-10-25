@@ -4,7 +4,6 @@ function getIndexOfWordInList(word, list) {
   while (L <= R) {
     var index = Math.floor( (L + R) / 2 )
     if (word == list[index].word) {
-      console.log("FOUND WORD");
       return index;
     }
     else if (list[index].word > word) {

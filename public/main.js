@@ -1,4 +1,4 @@
-var socket = io('http://localhost');
+	var socket = io('http://192.168.10.190');
 
 // When the client starts, create the uid.
 if (!getCookie('uUID')) {
@@ -11,10 +11,10 @@ socket.emit('login', getCookie('uUID'));
 socket.on('alert', (data) => {
 	// Alert message
 	$('.alerter').html(data);
-	$('.alerter').fadeIn('slow', function(){
+	$('.alerter').fadeIn('fast', function(){
 		setTimeout(function(){
 			$('.alerter').fadeOut();
-		}, 4000);
+		}, 8000);
 
 	});
 });
@@ -34,6 +34,15 @@ socket.on('guess', (data) => {
 	$('.guess-box').slideDown();
 	$('.progress-bar').slideDown();
 });
+
+socket.on('toplist', (data) => {
+	var topList = data;
+	$("#toplist").html("<tr><th>Nickname</th><th>Total points<th></tr>")
+	for (var i = 0; i < topList.length; i++) {
+		$('#toplist tr:last').after('<tr>' +'<td>' + topList[i].name + '</td>' + '<td>' + topList[i].points + '</td>'+ '</tr>');
+	}
+});
+
 
 socket.on('timer', (data) => {
 	$('.progress-bar').width(100 * (30 - data) / 30 + "%");
@@ -72,7 +81,7 @@ socket.on('correct', (data) => {
 	$('.alerter').fadeIn('slow', function(){
 		setTimeout(function(){
 			$('.alerter').fadeOut();
-		}, 5000);
+		}, 8000);
 	});
 });
 

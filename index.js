@@ -3,8 +3,10 @@ var express = require('express')
 var mysql = require('mysql')
 SqlManager = require('./SqlManager.js')
 User = require('./User.js')
+TopList = require('./TopList.js')
 getIndexOfWordInList = require('./wordListFunctions.js')
-
+var striptags = require('striptags');
+require('dotenv').config()
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
@@ -18,15 +20,16 @@ server.listen(port, () => {
 
 /* Start connection to mysql database */
 var con = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
   database: 'synonym',
-  password: ''
+  password: process.env.DB_PASS
 });
 
 var words = [];
 var explanations = [];
 var users = {};
+var topList = new TopList();
 
 var sqlManager = new SqlManager(con, function() {
   sqlManager.getAllWords(function(data){
@@ -34,11 +37,9 @@ var sqlManager = new SqlManager(con, function() {
     sqlManager.getAllExplanations(function(data){
       explanations = data;
 
-      for (var i = 0; i < 50; i++) {
+      for (var i = 0; i < explanations.length; i++) {
         var current_word = explanations[i].word;
-        console.log(current_word);
         var index_in_word_list = getIndexOfWordInList(current_word, words)
-        console.log(index_in_word_list);
         if (!index_in_word_list) continue;
         words[index_in_word_list].explanations = []
         words[index_in_word_list].explanations.push(explanations[i]);
@@ -69,6 +70,7 @@ io.on('connection', function (socket) {
       var user = new User(randomUserName, sqlManager, socket.id, io, session_id, words);
 
       users[session_id] = user;
+      topList.addUser(user);
       socket.user = user;
     }
 
@@ -88,15 +90,18 @@ io.on('connection', function (socket) {
       });
     }
     socket.user.sendUserInfo();
+    io.emit('toplist', topList.top10());
 
   })
 
   socket.on('name', function (data) {
     console.log("Changing name to " + data);
     socket.user.setName(data, []);
+    io.emit('toplist', topList.top10());
   });
 
   socket.on('explain', function (data) {
+    data = striptags(data);
     if (socket.user && socket.user.mode == "explain") {
       if (socket.user.makeExplanation(data)) {
         var expl_obj = {
@@ -135,6 +140,7 @@ io.on('connection', function (socket) {
           explainer.giveExplainPoint();
         }
         socket.user.giveGuessPoint();
+        io.emit('toplist', topList.top10());
         randomWord = socket.user.getWordToExplain(words);
       } else {
         socket.user.giveNewHint(words);

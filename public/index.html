@@ -29,7 +29,7 @@
 					without mentioning it.
 					<br>
 					<br>
-					<button type="button" class="btn btn-sm btn-primary rules-popover" data-placement="bottom" data-toggle="popover" title="Rules" data-content="Don't include the word in your explanation. Don't use translations. Synonyms are ok. You will receive 1 point if someone guesses the word correctly with your explanation.">Rules</button>
+					<button type="button" class="btn btn-sm btn-primary rules-popover" data-placement="bottom" data-toggle="popover" title="Rules" data-content="Don't include the word in your explanation. Don't use translations. Synonyms are ok. You will receive 1 point if someone guesses the word correctly with your explanation. Is the word too hard? Reload the page.">Rules</button>
 				</div>
 				<div class="explanation-box" style="display:none;">
 					<u>Guess the word:</u>
@@ -56,7 +56,7 @@
 				<div class="points-box">
 						<table class="table">
 							<tr>
-								<td><b>Nickname:</b></td>
+								<td><b>Name:</b></td>
 								<td><input type="text" id="username"></td>
 							</tr>
 							<tr>
@@ -67,6 +67,21 @@
 				</div>
 			</div>
 		</div>
+
+    <div class="row">
+      <div class="col-md-6 offset-md-3 text-center">
+        <div class="points-box">
+          <h3>Top list</h3>
+            <table id = "toplist" class="table">
+              <tr>
+                <th><b>Nickname</b></th>
+                <td><b>Total points</b></td>
+              </tr>
+            </table>
+        </div>
+      </div>
+    </div>
+
 
 	</main>
 
