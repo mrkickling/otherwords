@@ -1,4 +1,5 @@
 levensteinDistance = require('./levensteinDistance.js')
+getIndexOfWordInList = require('./wordListFunctions.js')
 TIMER_TIME = 30;
 
 class User {
@@ -52,7 +53,7 @@ class User {
 
    timeOut(words) {
      this.timer = TIMER_TIME;
-     this.sendAlert("TIME IS UP!");
+     this.sendAlert("TIME IS UP! The word was " + this.word_to_guess.word);
      this.getWordToExplain(words);
    }
 
@@ -151,6 +152,22 @@ class User {
      } else {
        this.sqlManager.addExplanation(this.word_to_explain_id, explanation, this.uid);
        return true;
+     }
+   }
+
+   giveNewHint(words) {
+     var socket = this.io.sockets.connected[this.socket_id];
+     if (socket) {
+       var wordIndex = getIndexOfWordInList(socket.user.word_to_guess.word, words);
+       var explanations = words[wordIndex].explanations;
+       var randomExplanation = explanations[ Math.floor(explanations.length * Math.random()) ]
+       console.log(randomExplanation);
+       if(!randomExplanation) {
+         socket.emit('wrong', false);
+       } else {
+         this.word_to_guess = randomExplanation;
+         socket.emit('wrong', randomExplanation.explanation);
+       }
      }
    }
 

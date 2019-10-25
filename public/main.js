@@ -1,15 +1,13 @@
 var socket = io('http://localhost');
 
 // When the client starts, create the uid.
-if (window.localStorage) {
-	if (!window.localStorage.getItem('uUID')) {
-		window.localStorage.setItem('uUID', Math.random().toString(24) + new Date());
-	}
-	// Emit the UID right after connection
-	socket.emit('login', window.localStorage.getItem('uUID'));
-} else {
-	socket.emit('login', Math.random().toString(24) + new Date());
+if (!getCookie('uUID')) {
+	setCookie('uUID', Math.random().toString(24) + new Date());
 }
+// Emit the UID right after connection
+socket.emit('login', getCookie('uUID'));
+
+
 socket.on('alert', (data) => {
 	// Alert message
 	$('.alerter').html(data);
@@ -54,6 +52,9 @@ socket.on('explain', (data) => {
 
 socket.on('wrong', (data) => {
 	// Display the welcome message
+	if(data) {
+		$('.explanation-to-guess').html(data);
+	}
 	console.log("WRONG!!!");
 	$('.input-text-guess').animate({
     backgroundColor : "rgb(255, 0, 0)"
@@ -71,7 +72,7 @@ socket.on('correct', (data) => {
 	$('.alerter').fadeIn('slow', function(){
 		setTimeout(function(){
 			$('.alerter').fadeOut();
-		}, 4000);
+		}, 5000);
 	});
 });
 
@@ -83,7 +84,10 @@ $(function () {
 	  $('[data-toggle="popover"]').popover()
 	})
 
-	$('.input-text-explain').keyup(function() {
+	$('.input-text-explain').keyup(function(e) {
+		if (e.which == 13){
+			$('#send-explain').click();
+		}
 	  var text_length = $('.input-text-explain').val().length;
 	  $('#count').html(text_length);
 	});
@@ -103,3 +107,26 @@ $(function () {
 		$('.input-text-guess').val("");
 	})
 })
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}

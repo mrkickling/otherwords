@@ -1,14 +1,16 @@
 class SqlManager {
-   constructor(conn) {
+   constructor(conn, cb) {
    	this.conn = conn;
 		this.conn.connect(function(err) {
 		  if (err) throw err;
 		  console.log("Connected!");
-			this.createTablesIfNotExists();
+			this.createTablesIfNotExists(function() {
+        cb();
+      });
 		}.bind(this));
    }
 
-	createTablesIfNotExists() {
+	createTablesIfNotExists(cb) {
 		var sql = "CREATE TABLE IF NOT EXISTS explanations (id INT AUTO_INCREMENT PRIMARY KEY, word int(255), explainer VARCHAR(255), explanation VARCHAR(141), added DATETIME)";
 		this.conn.query(sql, function (err, result) {
 			if (err) throw err;
@@ -18,11 +20,12 @@ class SqlManager {
 		this.conn.query(sql, function (err, result) {
 			if (err) throw err;
 			console.log("Table words created");
+      cb();
 		});
 	}
 
    getAllWords(callback){
-		this.conn.query("SELECT * FROM words", function(err, rows, fields){
+		this.conn.query("SELECT * FROM words ORDER BY word ASC", function(err, rows, fields){
 			if (err){
 			  console.log(err);
 			  throw err;

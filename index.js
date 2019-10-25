@@ -3,6 +3,7 @@ var express = require('express')
 var mysql = require('mysql')
 SqlManager = require('./SqlManager.js')
 User = require('./User.js')
+getIndexOfWordInList = require('./wordListFunctions.js')
 
 var app = express();
 var server = require('http').Server(app);
@@ -23,18 +24,28 @@ var con = mysql.createConnection({
   password: ''
 });
 
-var sqlManager = new SqlManager(con);
 var words = [];
 var explanations = [];
 var users = {};
 
-sqlManager.getAllWords(function(data){
-  words = data;
-})
+var sqlManager = new SqlManager(con, function() {
+  sqlManager.getAllWords(function(data){
+    words = data;
+    sqlManager.getAllExplanations(function(data){
+      explanations = data;
 
-sqlManager.getAllExplanations(function(data){
-  explanations = data;
-})
+      for (var i = 0; i < 50; i++) {
+        var current_word = explanations[i].word;
+        console.log(current_word);
+        var index_in_word_list = getIndexOfWordInList(current_word, words)
+        console.log(index_in_word_list);
+        if (!index_in_word_list) continue;
+        words[index_in_word_list].explanations = []
+        words[index_in_word_list].explanations.push(explanations[i]);
+      }
+    })
+  })
+});
 
 // Routing
 app.use(express.static(path.join(__dirname, 'public')));
@@ -48,7 +59,7 @@ io.on('connection', function (socket) {
       console.log("User exists");
       var old_socket_id = users[session_id].socket_id
       if (io.sockets.connected[old_socket_id]) { // Disconnect old
-        io.sockets.connected[old_socket_id].emit('alert', "You seem to be using to browser windows, this one is being closed now");
+        io.sockets.connected[old_socket_id].emit('alert', "You seem to be using more than one browser windows, this one is being closed now");
         io.sockets.connected[old_socket_id].disconnect();
       }
       socket.user = users[session_id];
@@ -88,11 +99,17 @@ io.on('connection', function (socket) {
   socket.on('explain', function (data) {
     if (socket.user && socket.user.mode == "explain") {
       if (socket.user.makeExplanation(data)) {
-        explanations.push({
+        var expl_obj = {
           word: socket.user.word_to_explain,
           explanation: data,
-          uid: socket.user.uid
-        })
+          explainer: socket.user.uid
+        };
+        explanations.push(expl_obj) // Add to explanations
+        var indexInList = getIndexOfWordInList(expl_obj.word, words);
+        if (!words[indexInList].explanations) {
+          words[indexInList].explanations = [];
+        }
+        words[indexInList].explanations.push(expl_obj); // Add to words
         socket.user.getWordToGuess(explanations, function(randomWord) {
           if (randomWord == false) { // Send new word to explain if no word to guess
             console.log("No explanations in sight ...");
@@ -113,16 +130,15 @@ io.on('connection', function (socket) {
   socket.on('guess', function (data) {
     if (socket.user && socket.user.mode == "guess") {
       if (socket.user.guessCorrect(data)) { // Guess was correct
-        var explainer = users[socket.user.word_to_guess.uid];
+        var explainer = users[socket.user.word_to_guess.explainer];
         if (explainer) {
           explainer.giveExplainPoint();
         }
         socket.user.giveGuessPoint();
         randomWord = socket.user.getWordToExplain(words);
       } else {
-        socket.emit('wrong');
+        socket.user.giveNewHint(words);
       }
     }
   });
-
 });
