@@ -10,8 +10,7 @@ require('dotenv').config()
 
 var app = express();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
-const io = require("socket.io")(server, {
+var io = require("socket.io")(server, {
     handlePreflightRequest: (req, res) => {
         const headers = {
             "Access-Control-Allow-Headers": "Content-Type, Authorization",
@@ -32,8 +31,8 @@ server.listen(port, () => {
 if(process.env.ENVIRONMENT != "develop"){
   function requireHTTPS(req, res, next) {
     // The 'x-forwarded-proto' check is for Heroku
-    if (!req.secure && req.get('x-forwarded-proto') !== 'https' && process.env.NODE_ENV !== "development") {
-      return res.redirect(process.env.HOST + req.url);
+    if (!req.secure && req.get('x-forwarded-proto') !== 'https') {
+      return res.redirect("https://synonym.westeurope.cloudapp.azure.com/");
     }
     next();
   }
