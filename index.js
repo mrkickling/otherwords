@@ -21,6 +21,7 @@ server.listen(port, () => {
 /* Start connection to mysql database */
 var con = mysql.createConnection({
   host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
   user: process.env.DB_USER,
   database: 'synonym',
   password: process.env.DB_PASS
